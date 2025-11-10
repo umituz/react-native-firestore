@@ -1,0 +1,56 @@
+{
+  "name": "@umituz/react-native-firestore",
+  "version": "1.0.0",
+  "description": "Firestore operations and BaseRepository for React Native apps - Centralized Firestore utilities for hundreds of apps",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "version:patch": "npm version patch -m 'chore: release v%s'",
+    "version:minor": "npm version minor -m 'chore: release v%s'",
+    "version:major": "npm version major -m 'chore: release v%s'"
+  },
+  "keywords": [
+    "react-native",
+    "firestore",
+    "firebase",
+    "repository",
+    "base-repository",
+    "database",
+    "ddd",
+    "domain-driven-design",
+    "type-safe",
+    "solid",
+    "dry",
+    "kiss"
+  ],
+  "author": "Ümit UZ <umit@umituz.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/umituz/react-native-firestore.git"
+  },
+  "peerDependencies": {
+    "react": ">=18.2.0",
+    "react-native": ">=0.74.0",
+    "@umituz/react-native-firebase": ">=1.0.0",
+    "firebase": ">=11.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.45",
+    "@types/react-native": "^0.73.0",
+    "react": "^18.2.0",
+    "react-native": "^0.74.0",
+    "typescript": "^5.3.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ]
+}
+
