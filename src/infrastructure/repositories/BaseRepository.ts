@@ -32,12 +32,24 @@ import { getFirestore } from "../config/FirestoreClient";
 export class BaseRepository {
   /**
    * Get Firestore database instance
+   * Returns null if Firestore is not initialized (offline mode)
+   * Use getDbOrThrow() if you need to throw an error instead
+   *
+   * @returns Firestore instance or null if not initialized
+   */
+  protected getDb(): Firestore | null {
+    return getFirestore();
+  }
+
+  /**
+   * Get Firestore database instance or throw error
    * Throws error if Firestore is not initialized
+   * Use this method when Firestore is required for the operation
    *
    * @returns Firestore instance
    * @throws Error if Firestore is not initialized
    */
-  protected getDb(): Firestore {
+  protected getDbOrThrow(): Firestore {
     const db = getFirestore();
     if (!db) {
       throw new Error("Firestore is not initialized. Please call initializeFirebase() first.");

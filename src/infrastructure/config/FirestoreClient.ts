@@ -57,6 +57,12 @@ class FirestoreClientSingleton {
     }
     try {
       const app = getFirebaseApp(); // Get the core Firebase App
+      
+      // Return null if Firebase App is not available (offline mode)
+      if (!app) {
+        return null;
+      }
+      
       this.firestore = FirebaseFirestoreInitializer.initialize(app);
       return this.firestore;
     } catch (error) {
