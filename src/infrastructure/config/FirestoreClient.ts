@@ -71,9 +71,10 @@ class FirestoreClientSingleton {
   /**
    * Get Firestore instance
    * Auto-initializes if Firebase App is available
-   * @throws {FirebaseFirestoreInitializationError} If Firestore is not initialized and auto-init fails
+   * Returns null if config is not available (offline mode - no error)
+   * @returns Firestore instance or null if not initialized
    */
-  getFirestore(): Firestore {
+  getFirestore(): Firestore | null {
     // Auto-initialize if not already initialized
     if (!this.firestore && !this.initializationError) {
       try {
@@ -83,17 +84,13 @@ class FirestoreClientSingleton {
           this.initialize();
         }
       } catch {
-        // Firebase App not available, will throw error below
+        // Firebase App not available, return null (offline mode)
+        return null;
       }
     }
 
-    if (!this.firestore) {
-      const errorMsg =
-        this.initializationError ||
-        'Firestore client not initialized. Call initializeFirestore() first. Make sure Firebase App is initialized via @umituz/react-native-firebase.';
-      throw new FirebaseFirestoreInitializationError(errorMsg);
-    }
-    return this.firestore;
+    // Return null if not initialized (offline mode - no error)
+    return this.firestore || null;
   }
 
   /**
@@ -147,9 +144,10 @@ export function initializeFirestore(): Firestore | null {
 /**
  * Get Firestore instance
  * Auto-initializes if Firebase App is available
- * @throws {FirebaseFirestoreInitializationError} If Firestore is not initialized and auto-init fails
+ * Returns null if config is not available (offline mode - no error)
+ * @returns Firestore instance or null if not initialized
  */
-export function getFirestore(): Firestore {
+export function getFirestore(): Firestore | null {
   return firestoreClient.getFirestore();
 }
 
