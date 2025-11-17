@@ -27,7 +27,7 @@
  */
 
 import type { Firestore } from "firebase/firestore";
-import { getFirestore } from "@umituz/react-native-firebase";
+import { getFirestore } from "../config/FirestoreClient";
 
 export class BaseRepository {
   /**

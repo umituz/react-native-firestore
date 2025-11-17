@@ -1,9 +1,10 @@
 # @umituz/react-native-firestore
 
-Firestore operations and BaseRepository for React Native apps - Centralized Firestore utilities for hundreds of apps.
+Firestore initialization, operations, and BaseRepository for React Native apps - Centralized Firestore utilities for hundreds of apps.
 
 ## Features
 
+- ✅ **Firestore Initialization**: Initialize Firestore with persistent cache
 - ✅ **BaseRepository**: Base class for all Firestore repositories
 - ✅ **Date Utilities**: ISO string ↔ Firestore Timestamp conversion
 - ✅ **App-Agnostic**: Works with any app, no app-specific code
@@ -20,23 +21,44 @@ npm install @umituz/react-native-firestore @umituz/react-native-firebase firebas
 ## Prerequisites
 
 This package requires:
-- `@umituz/react-native-firebase` - Firebase initialization
+- `@umituz/react-native-firebase` - Firebase App initialization
 - `firebase` - Firebase SDK
 
-Make sure to initialize Firebase before using this package:
+Make sure to initialize Firebase App before using this package:
 
 ```typescript
 import { initializeFirebase } from '@umituz/react-native-firebase';
+import { initializeFirestore } from '@umituz/react-native-firestore';
 
-await initializeFirebase({
+// 1. Initialize Firebase App first
+const app = initializeFirebase({
   apiKey: '...',
   authDomain: '...',
   projectId: '...',
   // ... other config
 });
+
+// 2. Then initialize Firestore
+const db = initializeFirestore();
 ```
 
 ## Usage
+
+### Firestore Initialization
+
+```typescript
+import { initializeFirebase } from '@umituz/react-native-firebase';
+import { initializeFirestore, getFirestore } from '@umituz/react-native-firestore';
+
+// Initialize Firebase App first
+const app = initializeFirebase(config);
+
+// Then initialize Firestore
+const db = initializeFirestore();
+
+// Or get Firestore instance directly (will initialize if needed)
+const db = getFirestore();
+```
 
 ### BaseRepository
 
