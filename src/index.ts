@@ -59,6 +59,21 @@ export {
   getCurrentISOString,
 } from './utils/dateUtils';
 
+// =============================================================================
+// UTILS - Query Builder
+// =============================================================================
+
+export {
+  buildQuery,
+  createInFilter,
+  createEqualFilter,
+} from './utils/query-builder';
+
+export type {
+  QueryBuilderOptions,
+  FieldFilter,
+} from './utils/query-builder';
+
 // Re-export Firestore types for convenience
 export type { Timestamp } from 'firebase/firestore';
 
