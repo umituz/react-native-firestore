@@ -85,6 +85,56 @@ export {
   getQuotaErrorMessage,
 } from './utils/quota-error-detector.util';
 
+// =============================================================================
+// DOMAIN LAYER - Entities
+// =============================================================================
+
+export type {
+  QuotaMetrics,
+  QuotaLimits,
+  QuotaStatus,
+} from './domain/entities/QuotaMetrics';
+
+export type {
+  RequestLog,
+  RequestStats,
+  RequestType,
+} from './domain/entities/RequestLog';
+
+// =============================================================================
+// DOMAIN LAYER - Services
+// =============================================================================
+
+export { QuotaCalculator } from './domain/services/QuotaCalculator';
+
+// =============================================================================
+// INFRASTRUCTURE LAYER - Middleware
+// =============================================================================
+
+export {
+  QueryDeduplicationMiddleware,
+  queryDeduplicationMiddleware,
+} from './infrastructure/middleware/QueryDeduplicationMiddleware';
+
+export {
+  QuotaTrackingMiddleware,
+  quotaTrackingMiddleware,
+} from './infrastructure/middleware/QuotaTrackingMiddleware';
+
+// =============================================================================
+// INFRASTRUCTURE LAYER - Services
+// =============================================================================
+
+export {
+  QuotaMonitorService,
+  quotaMonitorService,
+} from './infrastructure/services/QuotaMonitorService';
+
+export {
+  RequestLoggerService,
+  requestLoggerService,
+} from './infrastructure/services/RequestLoggerService';
+
 // Re-export Firestore types for convenience
 export type { Timestamp } from 'firebase/firestore';
 
