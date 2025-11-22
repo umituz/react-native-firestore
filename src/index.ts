@@ -25,6 +25,7 @@
 export {
   FirebaseFirestoreError,
   FirebaseFirestoreInitializationError,
+  FirebaseFirestoreQuotaError,
 } from './domain/errors/FirebaseFirestoreError';
 
 // =============================================================================
@@ -73,6 +74,16 @@ export type {
   QueryBuilderOptions,
   FieldFilter,
 } from './utils/query-builder';
+
+// =============================================================================
+// UTILS - Quota Error Detection
+// =============================================================================
+
+export {
+  isQuotaError,
+  isRetryableError,
+  getQuotaErrorMessage,
+} from './utils/quota-error-detector.util';
 
 // Re-export Firestore types for convenience
 export type { Timestamp } from 'firebase/firestore';

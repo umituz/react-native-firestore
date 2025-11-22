@@ -30,3 +30,23 @@ export class FirebaseFirestoreInitializationError extends FirebaseFirestoreError
   }
 }
 
+/**
+ * Firestore Quota Error
+ * Thrown when Firebase quota limits are exceeded
+ *
+ * Firebase quota limits:
+ * - Free tier: 50K reads/day, 20K writes/day, 20K deletes/day
+ * - Blaze plan: Pay as you go, higher limits
+ *
+ * This error is NOT retryable - quota won't increase by retrying
+ */
+export class FirebaseFirestoreQuotaError extends FirebaseFirestoreError {
+  constructor(message: string, originalError?: unknown) {
+    super(message, originalError);
+    this.name = 'FirebaseFirestoreQuotaError';
+    (this as any).isQuotaError = true;
+    (this as any).code = 'resource-exhausted';
+    Object.setPrototypeOf(this, FirebaseFirestoreQuotaError.prototype);
+  }
+}
+

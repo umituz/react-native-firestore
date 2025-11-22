@@ -19,7 +19,7 @@
  *
  * export class MyRepository extends BaseRepository {
  *   async create(data: MyData): Promise<MyData> {
- *     const db = this.getDb();
+ *     const db = this.getDbOrThrow();
  *     // Use db for Firestore operations
  *   }
  * }
@@ -28,6 +28,11 @@
 
 import type { Firestore } from "firebase/firestore";
 import { getFirestore } from "../config/FirestoreClient";
+import {
+  isQuotaError as checkQuotaError,
+  getQuotaErrorMessage,
+} from "../../utils/quota-error-detector.util";
+import { FirebaseFirestoreQuotaError } from "../../domain/errors/FirebaseFirestoreError";
 
 export class BaseRepository {
   /**
@@ -69,6 +74,50 @@ export class BaseRepository {
       return db !== null;
     } catch {
       return false;
+    }
+  }
+
+  /**
+   * Check if error is a quota error
+   * Quota errors indicate daily read/write/delete limits are exceeded
+   *
+   * @param error - Error to check
+   * @returns true if error is a quota error
+   */
+  protected isQuotaError(error: unknown): boolean {
+    return checkQuotaError(error);
+  }
+
+  /**
+   * Handle quota error
+   * Throws FirebaseFirestoreQuotaError with user-friendly message
+   *
+   * @param error - Original error
+   * @throws FirebaseFirestoreQuotaError
+   */
+  protected handleQuotaError(error: unknown): never {
+    const message = getQuotaErrorMessage();
+    throw new FirebaseFirestoreQuotaError(message, error);
+  }
+
+  /**
+   * Wrap Firestore operation with quota error handling
+   * Automatically detects and handles quota errors
+   *
+   * @param operation - Firestore operation to execute
+   * @returns Result of the operation
+   * @throws FirebaseFirestoreQuotaError if quota error occurs
+   */
+  protected async executeWithQuotaHandling<T>(
+    operation: () => Promise<T>,
+  ): Promise<T> {
+    try {
+      return await operation();
+    } catch (error) {
+      if (this.isQuotaError(error)) {
+        this.handleQuotaError(error);
+      }
+      throw error;
     }
   }
 }
