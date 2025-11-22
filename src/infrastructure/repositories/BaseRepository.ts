@@ -26,13 +26,15 @@
  * ```
  */
 
-import type { Firestore } from "firebase/firestore";
+import type { Firestore, Query } from "firebase/firestore";
 import { getFirestore } from "../config/FirestoreClient";
 import {
   isQuotaError as checkQuotaError,
   getQuotaErrorMessage,
 } from "../../utils/quota-error-detector.util";
 import { FirebaseFirestoreQuotaError } from "../../domain/errors/FirebaseFirestoreError";
+import { quotaTrackingMiddleware } from "../middleware/QuotaTrackingMiddleware";
+import { queryDeduplicationMiddleware } from "../middleware/QueryDeduplicationMiddleware";
 
 export class BaseRepository {
   /**
@@ -119,6 +121,87 @@ export class BaseRepository {
       }
       throw error;
     }
+  }
+
+  /**
+   * Execute query with deduplication and quota tracking
+   * Prevents duplicate queries and tracks quota usage
+   *
+   * @param collection - Collection name
+   * @param query - Firestore query
+   * @param queryFn - Function to execute the query
+   * @param cached - Whether the result is from cache
+   * @returns Query result
+   */
+  protected async executeQuery<T>(
+    collection: string,
+    query: Query,
+    queryFn: () => Promise<T>,
+    cached: boolean = false,
+  ): Promise<T> {
+    const queryKey = {
+      collection,
+      filters: query.toString(),
+      limit: undefined,
+      orderBy: undefined,
+    };
+
+    return queryDeduplicationMiddleware.deduplicate(queryKey, async () => {
+      return quotaTrackingMiddleware.trackOperation(
+        {
+          type: 'read',
+          collection,
+          count: 1,
+          cached,
+        },
+        queryFn,
+      );
+    });
+  }
+
+  /**
+   * Track read operation
+   *
+   * @param collection - Collection name
+   * @param count - Number of documents read
+   * @param cached - Whether the result is from cache
+   */
+  protected trackRead(
+    collection: string,
+    count: number = 1,
+    cached: boolean = false,
+  ): void {
+    quotaTrackingMiddleware.trackRead(collection, count, cached);
+  }
+
+  /**
+   * Track write operation
+   *
+   * @param collection - Collection name
+   * @param documentId - Document ID (optional)
+   * @param count - Number of documents written
+   */
+  protected trackWrite(
+    collection: string,
+    documentId?: string,
+    count: number = 1,
+  ): void {
+    quotaTrackingMiddleware.trackWrite(collection, documentId, count);
+  }
+
+  /**
+   * Track delete operation
+   *
+   * @param collection - Collection name
+   * @param documentId - Document ID (optional)
+   * @param count - Number of documents deleted
+   */
+  protected trackDelete(
+    collection: string,
+    documentId?: string,
+    count: number = 1,
+  ): void {
+    quotaTrackingMiddleware.trackDelete(collection, documentId, count);
   }
 }
 
