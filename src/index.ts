@@ -76,6 +76,31 @@ export type {
 } from './utils/query-builder';
 
 // =============================================================================
+// UTILS - Pagination
+// =============================================================================
+
+export {
+  PaginationHelper,
+  createPaginationHelper,
+} from './utils/pagination.helper';
+
+export type {
+  PaginatedResult,
+  PaginationParams,
+} from './types/pagination.types';
+
+export { EMPTY_PAGINATED_RESULT } from './types/pagination.types';
+
+// =============================================================================
+// UTILS - Document Mapper
+// =============================================================================
+
+export {
+  DocumentMapperHelper,
+  createDocumentMapper,
+} from './utils/document-mapper.helper';
+
+// =============================================================================
 // UTILS - Quota Error Detection
 // =============================================================================
 
