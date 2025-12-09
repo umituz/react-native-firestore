@@ -26,6 +26,24 @@ export class RequestLoggerService {
       this.logs.shift();
     }
 
+    // Log Firestore operations in development mode
+    if (__DEV__) {
+      const prefix = fullLog.cached ? '[Firestore Cache]' : '[Firestore]';
+      const operation = fullLog.type.toUpperCase();
+      const status = fullLog.success ? '✓' : '✗';
+      const details = fullLog.documentId
+        ? `${fullLog.collection}/${fullLog.documentId}`
+        : fullLog.collection;
+
+      if (fullLog.success) {
+        // eslint-disable-next-line no-console
+        console.log(`${prefix} ${status} ${operation}: ${details}`);
+      } else {
+        // eslint-disable-next-line no-console
+        console.error(`${prefix} ${status} ${operation}: ${details}`, fullLog.error);
+      }
+    }
+
     this.notifyListeners(fullLog);
   }
 
