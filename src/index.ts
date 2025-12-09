@@ -111,6 +111,18 @@ export {
 } from './utils/quota-error-detector.util';
 
 // =============================================================================
+// DOMAIN LAYER - Constants
+// =============================================================================
+
+export {
+  FREE_TIER_LIMITS,
+  QUOTA_THRESHOLDS,
+  calculateQuotaUsage,
+  isQuotaThresholdReached,
+  getRemainingQuota,
+} from './domain/constants/QuotaLimits';
+
+// =============================================================================
 // DOMAIN LAYER - Entities
 // =============================================================================
 
