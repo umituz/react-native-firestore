@@ -22,6 +22,7 @@ import {
   where,
   orderBy,
   limit as limitQuery,
+  startAfter,
   or,
   type Firestore,
   type Query,
@@ -48,6 +49,11 @@ export interface QueryBuilderOptions {
     order?: "asc" | "desc";
   };
   limitValue?: number;
+  /**
+   * Cursor value for pagination (timestamp in milliseconds)
+   * Used with startAfter for cursor-based pagination
+   */
+  cursorValue?: number;
 }
 
 const MAX_IN_OPERATOR_VALUES = 10;
@@ -69,6 +75,7 @@ export function buildQuery(
     dateRange,
     sort,
     limitValue,
+    cursorValue,
   } = options;
 
   const collectionRef = collection(db, collectionName);
@@ -107,6 +114,11 @@ export function buildQuery(
   if (sort) {
     const sortOrder = sort.order || "desc";
     q = query(q, orderBy(sort.field, sortOrder));
+  }
+
+  // Apply cursor for pagination (must come after orderBy)
+  if (cursorValue !== undefined) {
+    q = query(q, startAfter(Timestamp.fromMillis(cursorValue)));
   }
 
   // Apply limit
