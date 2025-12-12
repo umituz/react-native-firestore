@@ -18,6 +18,37 @@ interface QueryKey {
 export class QueryDeduplicationMiddleware {
   private pendingQueries = new Map<string, PendingQuery>();
   private readonly DEDUPLICATION_WINDOW_MS = 1000; // 1 second
+  private readonly CLEANUP_INTERVAL_MS = 5000; // 5 seconds
+  private cleanupTimer: NodeJS.Timeout | null = null;
+
+  constructor() {
+    this.startCleanupTimer();
+  }
+
+  /**
+   * Start cleanup timer to prevent memory leaks
+   */
+  private startCleanupTimer(): void {
+    if (this.cleanupTimer) {
+      clearInterval(this.cleanupTimer);
+    }
+    
+    this.cleanupTimer = setInterval(() => {
+      this.cleanupExpiredQueries();
+    }, this.CLEANUP_INTERVAL_MS);
+  }
+
+  /**
+   * Clean up expired queries to prevent memory leaks
+   */
+  private cleanupExpiredQueries(): void {
+    const now = Date.now();
+    for (const [key, query] of this.pendingQueries.entries()) {
+      if (now - query.timestamp > this.DEDUPLICATION_WINDOW_MS) {
+        this.pendingQueries.delete(key);
+      }
+    }
+  }
 
   /**
    * Generate query key from query parameters
@@ -96,6 +127,17 @@ export class QueryDeduplicationMiddleware {
    * Clear all pending queries
    */
   clear(): void {
+    this.pendingQueries.clear();
+  }
+
+  /**
+   * Destroy middleware and cleanup resources
+   */
+  destroy(): void {
+    if (this.cleanupTimer) {
+      clearInterval(this.cleanupTimer);
+      this.cleanupTimer = null;
+    }
     this.pendingQueries.clear();
   }
 

@@ -4,15 +4,16 @@
  */
 
 import type { QuotaMetrics, QuotaLimits, QuotaStatus } from '../entities/QuotaMetrics';
+import { FREE_TIER_LIMITS } from '../constants/QuotaLimits';
 
 /**
  * Default quota limits (Firebase Spark Plan)
  * Can be overridden via configuration
  */
 const DEFAULT_QUOTA_LIMITS: QuotaLimits = {
-  dailyReadLimit: 50000,
-  dailyWriteLimit: 20000,
-  dailyDeleteLimit: 20000,
+  dailyReadLimit: FREE_TIER_LIMITS.DAILY_READS,
+  dailyWriteLimit: FREE_TIER_LIMITS.DAILY_WRITES,
+  dailyDeleteLimit: FREE_TIER_LIMITS.DAILY_DELETES,
 };
 
 export class QuotaCalculator {

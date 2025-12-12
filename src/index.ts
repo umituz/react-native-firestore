@@ -48,6 +48,8 @@ export type { Firestore } from './infrastructure/config/FirestoreClient';
 // =============================================================================
 
 export { BaseRepository } from './infrastructure/repositories/BaseRepository';
+export { BaseQueryRepository } from './infrastructure/repositories/BaseQueryRepository';
+export { BasePaginatedRepository } from './infrastructure/repositories/BasePaginatedRepository';
 
 // =============================================================================
 // UTILS - Date Utilities
